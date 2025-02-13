@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - CITYLERT</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            animation: gradientAnimation 15s ease infinite;
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: rgba(0, 0, 0, 0.85);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: slideDown 1s ease-out;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+            color: #ffffff;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 80px 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            animation: fadeIn 1.5s ease-in-out;
+            margin-top: 60px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin: 0;
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
+        .hero p {
+            font-size: 16px;
+            margin-top: 10px;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .section-container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            padding: 20px;
+            gap: 20px;
+            margin-top: 20px;
+            flex: 1;
+            box-sizing: border-box;
+        }
+
+        .section {
+            flex: 1;
+            background-color: transparent;
+            padding: 20px;
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        .section h2 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .section p {
+            font-size: 14px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .team-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            animation: fadeIn 2s ease-in-out;
+            margin-top: 20px;
+        }
+
+        .team-member {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 250px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            background-color: #1abc9c;
+        }
+
+        .team-member img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .team-member:hover img {
+            transform: scale(1.1);
+        }
+
+        .team-member h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .team-member p {
+            font-size: 14px;
+            color: #ffffff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 5px #ffffff; }
+            50% { text-shadow: 0 0 10px #ffffff, 0 0 15px #ff00ff; }
+            100% { text-shadow: 0 0 5px #ffffff; }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .navbar ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .navbar ul li {
+                margin: 5px 0;
+            }
+
+            .hero h1 {
+                font-size: 28px;
+            }
+
+            .hero p {
+                font-size: 14px;
+            }
+
+            .section-container {
+                flex-direction: column;
+            }
+
+            .section {
+                max-width: 100%;
+                margin-bottom: 20px;
+            }
+
+            .team-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .team-member {
+                max-width: 200px;
+                padding: 10px;
+            }
+
+            .team-member img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CITYLERT</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="prof.html">Profile</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero" id="about">
+        <h1>About Us</h1>
+        <p>Welcome to CITYLERT, your trusted partner in city safety and emergency alerts. Our mission is to keep you informed and prepared in every situation.</p>
+    </div>
+
+    <!-- Section Container -->
+    <div class="section-container">
+        <!-- Mission Statement Section -->
+        <div class="section">
+            <h2>Our Mission</h2>
+            <p>At CITYLERT, our mission is to provide timely and accurate information to the citizens of our city. We are committed to improving safety, fostering community engagement, and offering reliable support through our platform. Our team of dedicated professionals works around the clock to ensure that you receive the latest updates and alerts, keeping you and your loved ones safe.</p>
+        </div>
+
+        <!-- Company History Section -->
+        <div class="section">
+            <h2>Company History</h2>
+            <p>Founded in 2024, CITYLERT was born out of a need for a comprehensive city alert system. What started as a small project has grown into a leading provider of emergency notifications and community support. Over the years, we've expanded our services, integrated advanced technologies, and built strong partnerships with local organizations. Our commitment to innovation and excellence continues to drive us forward as we work to enhance the safety and well-being of our community.</p>
+        </div>
+    </div>
+
+    <!-- Team Section -->
+    <div class="section">
+        <h2>Meet the Team</h2>
+        <div class="team-container">
+            <div class="team-member">
+                <img src="path/to/image.jpg" alt="Team Member 1">
+                <h3>Adon Jobi</h3>
+                <p>CEO & Founder</p>
+            </div>
+            <div class="team-member">
+                <img src="path/to/image.jpg" alt="Team Member 2">
+                <h3>Alwin Antony</h3>
+                <p>CTO</p>
+            </div>
+            <div class="team-member">
+                <img src="path/to/image.jpg" alt="Team Member 3">
+                <h3>Anoop Joseph</h3>
+                <p>Community Manager</p>
+            </div>
+            <div class="team-member">
+                <img src="path/to/image.jpg" alt="Team Member 4">
+                <h3>Ajumon C Thampi</h3>
+                <p>Head of Operations</p>
+            </div>
+            <div class="team-member">
+                <img src="path/to/image.jpg" alt="Team Member 5">
+                <h3>Amal Benny</h3>
+                <p>Staff Manager</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

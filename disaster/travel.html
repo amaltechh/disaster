@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Memories</title>
+    <style>
+        /* General Styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: background-image 1s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Background Overlay */
+.bg-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 1.5s ease-in-out;
+    opacity: 0;
+}
+
+/* Navigation Bar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px); /* Frosted glass effect */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    animation: slideDown 0.8s ease-out;
+    position: sticky;
+    top: 0;
+    width: 98%;
+    z-index: 1000;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Smooth transition when scrolling */
+.navbar.scrolled {
+    background: rgba(0, 0, 0, 0.9);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+/* Navbar Links */
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    margin-left: 15px;
+}
+
+.navbar ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Glowing Hover Effect */
+.navbar ul li a:hover {
+    background: rgba(26, 188, 156, 0.8);
+    box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Active Link Indicator */
+.navbar ul li a.active {
+    background: #1abc9c;
+    color: #ffffff;
+}
+
+/* Logo Styling */
+.navbar .logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+/* Hover Effect for Logo */
+.navbar .logo:hover {
+    color: #1abc9c;
+    transform: scale(1.05);
+}
+
+/* Keyframe Animations */
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.navbar .logo img {
+    height: 40px;
+}
+
+/* Navigation Menu */
+.navbar ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar ul li {
+    margin-left: 20px;
+}
+
+.navbar ul li a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.navbar ul li a:hover {
+    background-color: #1abc9c;
+    color: #ffffff;
+}
+
+/* Responsive Navbar */
+.menu-toggle {
+    display: none;
+    font-size: 24px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Search Bar */
+.search {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 500px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 50px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.search:hover {
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.search input {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    width: 100%;
+}
+
+.search input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.search input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+}
+
+.search-icon {
+    color: white;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+/* Hero Section */
+.hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 350px;
+    background-color: rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 50px;
+    max-width: 800px;
+}
+
+.hero p {
+    font-size: 22px;
+    font-weight: 300;
+    max-width: 800px;
+}
+
+/* Grid Container */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+    gap: 20px;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 10px;
+    max-width: 1000px; 
+    width: 90%;
+    margin: 20px auto;
+}
+
+/* Memory Cards */
+.card {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.card button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #1abc9c;
+    border: none;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .navbar ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.9);
+        padding: 10px 0;
+    }
+
+    .navbar ul.active {
+        display: flex;
+    }
+
+    .navbar ul li {
+        margin: 10px 0;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .hero h1 {
+        font-size: 38px;
+    }
+
+    .hero p {
+        font-size: 18px;
+    }
+
+    .grid-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+    </style>
+</head>
+<body>
+
+    <div class="bg-overlay"></div>
+
+    <div class="navbar">
+        <div class="logo">
+            <img src="https://www.example.com/logo.png" alt="Logo">
+        </div>
+        <div class="menu-toggle" onclick="toggleMenu()">☰</div>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+    
+
+    <div class="hero">
+        <h1>Welcome to Our Travel Memories</h1>
+        <p>Explore beautiful travel stories, and discover new places.</p>
+    </div>
+    <div class="search">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Search memories...">
+    </div>
+    
+    <div id="memoryContainer" class="grid-container"></div>
+
+    <script>
+        const images = [
+            'image6.webp',
+            'image2.jpeg',
+            'image7.jpg',
+            'image4.png',
+            'image5.jpg'
+        ];
+
+        let currentIndex = 0;
+        const bgOverlay = document.querySelector(".bg-overlay");
+
+        function changeBackground() {
+            bgOverlay.style.backgroundImage = `url(${images[currentIndex]})`;
+            bgOverlay.style.opacity = "1"; // Fade in
+
+            setTimeout(() => {
+                bgOverlay.style.opacity = "1"; // Fade out after some time
+                currentIndex = (currentIndex + 1) % images.length;
+            }, 5000); // Display each image for 4 seconds
+        }
+
+        setInterval(changeBackground, 5000);
+        changeBackground();
+
+        const memories = [
+            { title: "Rome", description: "Visited the Colosseum and enjoyed Italian cuisine." },
+            { title: "India", description: "Explored the Taj Mahal and experienced cultural diversity." },
+            { title: "USA", description: "Road trip through Route 66 and visited national parks." }
+        ];
+
+        const searchInput = document.getElementById("searchInput");
+        const memoryContainer = document.getElementById("memoryContainer");
+
+        function displayMemories(memories) {
+            memoryContainer.innerHTML = "";
+            memories.forEach(memory => {
+                const card = document.createElement("div");
+                card.classList.add("card");
+
+                const title = document.createElement("h3");
+                title.textContent = memory.title;
+                card.appendChild(title);
+
+                const description = document.createElement("p");
+                description.textContent = memory.description;
+                card.appendChild(description);
+
+                const button = document.createElement("button");
+                button.textContent = "Learn More";
+                button.onclick = () => alert(`More about ${memory.title}`);
+                card.appendChild(button);
+
+                memoryContainer.appendChild(card);
+            });
+        }
+
+        searchInput.addEventListener("input", function() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filteredMemories = memories.filter(memory => 
+                memory.title.toLowerCase().includes(searchTerm) || 
+                memory.description.toLowerCase().includes(searchTerm)
+            );
+            displayMemories(filteredMemories);
+        });
+
+        displayMemories(memories);
+        function toggleMenu() {
+            document.querySelector(".navbar ul").classList.toggle("active");
+        }
+        
+    </script>
+
+</body>
+</html>
