@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITYLERT Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            animation: gradientAnimation 15s ease infinite;
+            color: white;
+            overflow: auto; /* Enable scrolling */
+            height: auto; /* Allow height to adjust based on content */
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+
+        .navbar .logo img {
+            height: 40px; /* Adjust logo height as needed */
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+            color: #ffffff;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            margin-right: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile:hover img {
+            transform: scale(1.1);
+        }
+
+        .profile .username {
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .profile .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            border-radius: 5px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile:hover .dropdown {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .notification {
+            position: relative;
+            cursor: pointer;
+            margin-left: 50%;
+        }
+
+        .notification img {
+            background-color: gray;
+            width: 30px;
+            height: 30px;
+        }
+
+        .notification .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Notification Panel Styles */
+        .notification-panel {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 20px;
+            width: 350px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px); /* Glass effect */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideIn 0.4s ease-out, fadeIn 0.4s ease-in-out;
+            z-index: 2000; /* Ensure it stays on top */
+        }
+        
+        /* Slide-in & Fade Animation */
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Notification Items Styling */
+        .notification-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.02);
+        }
+        
+        /* Close Button */
+        .notification-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            color: #fff;
+            transition: color 0.3s ease;
+        }
+        
+        .notification-close:hover {
+            color: #1abc9c;
+        }
+        
+
+        .notification-panel h3 {
+            margin: 0;
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #1d7a14;
+        }
+
+        .notification-panel p {
+            margin: 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .notification-panel .close {
+            position: absolute;
+            top: 5px;
+            right: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .dropdown a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-bottom: 1px solid #333;
+            transition: background 0.3s ease, padding 0.3s ease;
+        }
+
+        .dropdown a:hover {
+            background-color: #1abc9c;
+            padding-left: 25px;
+        }
+
+        .dropdown a:last-child {
+            border-bottom: none;
+        }
+
+        .hero {
+            flex: 1; /* Take remaining space */
+            display: flex;
+            flex-direction: column; /* Stack vertically */
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            animation: fadeIn 1.5s ease-in-out;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 60px; /* Increase font size */
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+            max-width: 800px;
+        }
+
+        .hero p {
+            font-size: 24px; /* Increase font size */
+            margin-bottom: 40px;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 800px;
+        }
+
+        .random-points-container {
+            width: 100%;
+            height: 300px;
+            background-color: rgba(0, 0, 0, 0.01);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 25px;
+            text-align: center;
+            text-shadow: 
+                0 0 5px #ffffff,   /* White glow */
+                0 0 10px #ffffff,  /* White glow */
+                0 0 15px #058d27,  /* Pinkish glow */
+                0 0 20px #058d27,  /* Pinkish glow */
+                0 0 25px #058d27,  /* Pinkish glow */
+                0 0 30px #058d27;
+            text-transform: capitalize;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        /* Grid Container for Cards */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Smaller cards */
+            gap: 20px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            max-width: 1000px; /* Smaller grid width */
+            margin: 20px auto;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px; /* Smaller padding */
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: zoomIn 1s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #1abc9c;
+            font-size: 18px; /* Smaller font size */
+            font-weight: 500;
+        }
+
+        .card p {
+            margin-bottom: 15px;
+            color: #f0f0f0;
+            font-size: 12px; /* Smaller font size */
+            line-height: 1.6;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 10px 15px; /* Smaller padding */
+            background-color: #1abc9c;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 12px; /* Smaller font size */
+            transition: background 0.3s ease;
+        }
+
+        .card a:hover {
+            background-color: #16a085;
+        }
+        /* General Travel Log Styling */
+
+
+        
+        
+
+        /* Animations */
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .navbar ul {
+                flex-direction: column;
+            }
+
+            .navbar ul li {
+                margin: 5px 0;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 36px; /* Responsive font size */
+            }
+
+            .hero p {
+                font-size: 18px; /* Responsive font size */
+                margin-bottom: 20px;
+            }
+
+            .random-points-container {
+                height: 200px;
+            }
+
+            .grid-container {
+                padding: 10px;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">
+            <img src="logooo.webp" alt="Logo">
+        </div>
+        <ul>
+            <li><a href="report.html">Report</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="map.html">MAP</a></li>
+            <li><a href="about.html">AboutUs</a></li>
+        </ul>
+        <div class="notification">
+            <img src="noti.jpg" alt="Notifications">
+            <div class="badge">!</div>
+            <div class="notification-panel">
+            <div class="close">&times;</div>
+            <h3>Notifications</h3>
+            <div id="notification-content"></div>
+        </div>
+        </div>
+        <div class="profile">
+            <img src="profile.jpg" alt="Profile Picture">
+            <span class="username">name</span>
+            <div class="dropdown">
+                <a href="prof.html">Profile</a>
+                <a href="editp.html">Edit Profile</a>
+                <a href="login.html">Logout</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div>
+            <h1>Welcome</h1>
+            <p>Your central hub for city alerts and citizen safety. Stay informed, report incidents, access safety tips, and connect with community support.</p>
+        </div>
+        <div class="random-points-container">
+            <p id="random-point">Loading...</p>
+        </div>
+    
+    
+
+    <!-- Grid Container for Cards -->
+    <div class="grid-container">
+        <div class="card">
+            <h3>Report an Incident</h3>
+            <p>Report emergencies and incidents quickly and efficiently.</p>
+            <a href="report.html">Report Now</a>
+        </div>
+        <div class="card">
+            <h3>Safety Tips</h3>
+            <p>Get tips and advice on staying safe in various situations.</p>
+            <a href="safe.html">Learn More</a>
+        </div>
+        <div class="card">
+            <h3>Community Support</h3>
+            <p>Find resources and support available in your community.</p>
+            <a href="com.html">Get Support</a>
+        </div>
+        <div class="card">
+            <h3>Volunteering</h3>
+            <p>Explore volunteer opportunities and contribute to your community.</p>
+            <a href="form.html">Join Us</a>
+        </div>
+        <!-- New Emergency Alert Card -->
+        <div class="card">
+            <h3>Emergency Alerts</h3>
+            <p>Stay updated with the latest emergency alerts and warnings.</p>
+            <a href="emer.html">View Alerts</a>
+        </div>
+        <div class="card">
+            <h3>Predict it</h3>
+            <p>Predict about the disasters which may occur in the coming future</p>
+            <a href="pred.html">report Predictions</a>
+        </div>
+        <div class="card">
+            <h3>FAQ</h3>
+            <p>if u have any doubt feel free to ask</p>
+            <br>
+            <a href="faq.html">faq here</a>
+        </div>
+        <div class="card">
+            <h3>Feedback</h3>
+            <p>your oppinion is our growth factor</p>
+            <br>
+            <a href="feed.html">Feedback</a>
+        </div>
+        
+    </div>
+
+    <script>
+        import { createClient } from '@supabase/supabase-js'
+
+// Create a single supabase client for interacting with your database
+const supabase = createClient('https://xyzcompany.supabase.co', 'public-anon-key')
+
+
+        // Array of points
+        document.addEventListener("DOMContentLoaded", function () {
+            var username = localStorage.getItem("username"); // Get username from localStorage
+            if (username) {
+                document.querySelector(".username").textContent = username; // Update span with username
+            }
+        });
+        const points = [
+            "Did you know? The city has over 200 parks you can explore!",
+            "Safety Tip: Always keep emergency contacts handy.",
+            "Alert: Severe weather expected in the coming days. Stay tuned for updates.",
+            "Community Support: Local shelters are available 24/7 for those in need.",
+            "Fire Alert: Be aware of fire safety regulations and always have a plan."
+        ];
+
+        function displayRandomPoint() {
+            const randomIndex = Math.floor(Math.random() * points.length);
+            const pointElement = document.getElementById("random-point");
+            pointElement.textContent = points[randomIndex];
+        }
+
+        // Display a new point every 5 seconds
+        setInterval(displayRandomPoint, 5000);
+
+        // Display an initial point immediately
+        displayRandomPoint();
+        function updateProfile() {
+        // Retrieve profile data from localStorage
+        const profilePic = localStorage.getItem('profilePicture');
+        const username = localStorage.getItem('username');
+        
+        // Update profile picture and username if available
+        const profileImg = document.querySelector('.profile img');
+        const profileName = document.querySelector('.profile .username');
+        
+        if (profilePic) {
+            profileImg.src = profilePic;
+        }
+        
+        if (username) {
+            profileName.textContent = username;
+        
+        }
+    }
+      // Call updateProfile on page load
+      window.onload = updateProfile;
+
+    
+    
+     function createAlertItem(incident) {
+            const alertElement = document.createElement("p");
+            alertElement.textContent = `✅${incident.type}: ${incident.description}`;
+            return alertElement;
+        }
+
+        function populateNotifications() {
+
+            
+            const notificationContent = document.getElementById("notification-content");
+            notificationContent.innerHTML = ''; // Clear existing content
+
+            // Retrieve incidents from localStorage
+            let incidents = JSON.parse(localStorage.getItem('incidents')) || [];
+
+            incidents.forEach(incident => {
+                const alertElement = createAlertItem(incident);
+                notificationContent.appendChild(alertElement);
+            });
+        }
+
+        document.querySelector('.notification').addEventListener('click', function() {
+            const panel = document.querySelector('.notification-panel');
+            populateNotifications(); // Populate notifications when clicked
+            panel.style.display = panel.style.display === 'none' || panel.style.display === '' ? 'block' : 'none';
+        });
+
+        document.querySelector('.notification-panel .close').addEventListener('click', function() {
+            document.querySelector('.notification-panel').style.display = 'none';
+        });
+    
+        // Display a new point every 5 seconds
+        setInterval(displayRandomPoint, 5000);
+
+        // Display an initial point immediately
+        displayRandomPoint();
+
+        function displayRandomPoint() {
+            const points = [
+                "Did you know? The city has over 200 parks you can explore!",
+                "Safety Tip: Always keep emergency contacts handy.",
+                "Alert: Severe weather expected in the coming days. Stay tuned for updates.",
+                "Community Support: Local shelters are available 24/7 for those in need.",
+                "Fire Alert: Be aware of fire safety regulations and always have a plan."
+            ];
+            const randomIndex = Math.floor(Math.random() * points.length);
+            const pointElement = document.getElementById("random-point");
+            pointElement.textContent = points[randomIndex];
+        }
+        const travelData = [
+    { location: "Paris", image: "paris.jpg" },
+    { location: "New York", image: "new-york.jpg" },
+    { location: "Tokyo", image: "tokyo.jpg" },
+    { location: "Paris", image: "eiffel.jpg" }
+];
+localStorage.setItem("travelLog", JSON.stringify(travelData));
+function renderTravelLog() {
+    const travelLogContainer = document.getElementById("travel-log-container");
+    const searchBar = document.getElementById("search-bar");
+    const travelLog = JSON.parse(localStorage.getItem("travelLog")) || [];
+
+    // Function to update the grid
+    function updateGrid(filter = "") {
+        travelLogContainer.innerHTML = "";
+
+        const filteredData = travelLog.filter((item) =>
+            item.location.toLowerCase().includes(filter.toLowerCase())
+        );
+
+        filteredData.forEach((item) => {
+            const itemDiv = document.createElement("div");
+            itemDiv.classList.add("travel-log-item");
+            itemDiv.dataset.location = item.location;
+
+            const img = document.createElement("img");
+            img.src = item.image;
+            img.alt = item.location;
+
+            const label = document.createElement("div");
+            label.classList.add("location-label");
+            label.textContent = item.location;
+
+            itemDiv.appendChild(img);
+            itemDiv.appendChild(label);
+            travelLogContainer.appendChild(itemDiv);
+
+            // Click handler to open modal
+            itemDiv.addEventListener("click", () => openModal(item));
+        });
+    }
+
+    // Modal functionality
+    const modal = document.getElementById("image-modal");
+    const modalImage = document.getElementById("modal-image");
+    const modalLocation = document.getElementById("modal-location");
+    const closeModal = document.getElementById("close-modal");
+
+    function openModal(item) {
+        modal.classList.add("show");
+        modalImage.src = item.image;
+        modalLocation.textContent = item.location;
+    }
+
+    function closeModalHandler() {
+        modal.classList.remove("show");
+    }
+
+    closeModal.addEventListener("click", closeModalHandler);
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) closeModalHandler();
+    });
+
+    // Search functionality
+    searchBar.addEventListener("input", (e) => {
+        const filter = e.target.value;
+        updateGrid(filter);
+    });
+
+    // Initial render
+    updateGrid();
+}
+
+// Sample Data (Run Once)
+if (!localStorage.getItem("travelLog")) {
+    localStorage.setItem(
+        "travelLog",
+        JSON.stringify([
+            { location: "Paris", image: "paris.jpg" },
+            { location: "New York", image: "new-york.jpg" },
+            { location: "Tokyo", image: "tokyo.jpg" },
+            { location: "Paris", image: "eiffel.jpg" },
+            { location: "Tokyo", image: "shibuya.jpg" },
+        ])
+    );
+}
+
+// Load the travel log
+window.onload = renderTravelLog;
+
+// Call the renderTravelLog function on page load
+window.onload = () => {
+    renderTravelLog();
+};
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accident Alerts - CITYLERT</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            color: #ffffff;
+            animation: gradientAnimation 10s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+        }
+
+        .hero {
+            padding: 120px 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 40px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        .hero p {
+            font-size: 22px;
+            margin-bottom: 20px;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .live-messages {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .live-messages h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 32px;
+            text-transform: uppercase;
+            color: #1abc9c;
+        }
+
+        .message {
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .message p {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .message-time {
+            font-size: 14px;
+            color: #1abc9c;
+            margin-top: 5px;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CITYLERT</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Accident Alerts</h1>
+        <p>Stay updated with real-time information on recent accidents and road conditions in your area.</p>
+    </div>
+
+    <!-- Live Messages Section -->
+    <div class="live-messages" id="live-messages">
+        <h2>Live Messages</h2>
+        <!-- Live messages will be dynamically added here -->
+    </div>
+
+    <script>
+        async function fetchAccidentAlerts() {
+            try {
+                // Fetch only reports where type is "Accident"
+                const response = await fetch('http://localhost:5000/api/reports?type=Accident'); 
+                if (!response.ok) {
+                    throw new Error('Failed to fetch accident reports');
+                }
+                const accidentReports = await response.json();
+        
+                // Check if there are no accident reports
+                if (accidentReports.length === 0) {
+                    console.warn('No accident reports available.');
+                    document.getElementById('live-messages').innerHTML = '<h2>Live Messages</h2><p>No accident reports available.</p>';
+                    return;
+                }
+        
+                // Clear previous messages before appending new ones
+                const messagesContainer = document.getElementById('live-messages');
+                messagesContainer.innerHTML = '<h2>Live Messages</h2>';
+        
+                accidentReports.forEach(report => {
+                    addLiveMessage(report.description, report.location, report.timestamp);
+                });
+            } catch (error) {
+                console.error('Error fetching accident alerts:', error);
+                document.getElementById('live-messages').innerHTML = '<h2>Live Messages</h2><p>Failed to load accident reports.</p>';
+            }
+        }
+        
+        function addLiveMessage(description, location, timestamp) {
+            const messagesContainer = document.getElementById('live-messages');
+            const newMessage = document.createElement('div');
+            newMessage.classList.add('message');
+            newMessage.innerHTML = `
+                <p><strong>Location:</strong> ${location}</p>
+                <p>${description}</p>
+                <div class="message-time">${new Date(timestamp).toLocaleString()}</div>
+            `;
+            messagesContainer.prepend(newMessage);
+        }
+        
+        // Fetch data when the page loads
+        document.addEventListener('DOMContentLoaded', fetchAccidentAlerts);
+        
+        
+    </script>
+</body>
+</html>

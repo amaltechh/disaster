@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disaster Map - Kerala</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            animation: gradientAnimation 15s ease infinite;
+            color: rgb(9, 5, 48);
+            overflow: auto;
+            height: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+        header {
+            background: linear-gradient(90deg, #031138, #060527);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 10;
+            text-transform: uppercase;
+            backdrop-filter: 50px;
+        }
+    
+        
+        
+        nav {
+            margin-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        nav button {
+            background: #ffffff;
+            color: #003366;
+            border: 2px solid #003366;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav button:hover {
+            background: #003366;
+            color: white;
+        }
+
+        #map-container {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        #map { 
+            height: 500px; 
+            width: 70%; 
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        #info {
+            padding: 20px;
+            background: white;
+            width: 25%;
+            height: 450px;
+            margin-left: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+            text-align: left;
+            font-size: 1em;
+            overflow-y: auto;
+            transition: all 0.3s ease-in-out;
+            border-left: 5px solid #003366;
+        }
+        #info:hover {
+            transform: scale(1.02);
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+        }
+        
+        #search-box {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 2px solid #003366;
+            border-radius: 8px;
+            font-size: 1em;
+            outline: none;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        #search-box:focus {
+            border-color: #0055aa;
+            box-shadow: 0px 4px 8px rgba(0, 85, 170, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        Disaster Map - Kerala
+        <nav>
+            <button onclick="location.href='main.html'">Home</button>
+            <button onclick="location.href='about.html'">About</button>
+            <button onclick="location.href='cont.html'">Contact</button>
+            <button onclick="location.href='report.html'">Report a Disaster</button>
+        </nav>
+    </header>
+    <div id="map-container">
+        <div id="map"></div>
+        <div id="info">
+            <input type="text" id="search-box" placeholder="Search Location...">
+            <strong>Click a marker to see details.</strong>
+            <div id="details"></div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        const map = L.map('map').setView([10.8505, 76.2711], 7);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        const disasters = [
+    { type: 'Flood', location: 'Kochi', lat: 9.9312, lng: 76.2673, description: 'Heavy rainfall has caused severe waterlogging, affecting transport and daily activities.', severity: 'High' },
+    { type: 'Landslide', location: 'Wayanad', lat: 11.6854, lng: 76.1320, description: 'A massive landslide has blocked major roads, making rescue efforts difficult.', severity: 'Severe' },
+    { type: 'Cyclone', location: 'Trivandrum', lat: 8.5241, lng: 76.9366, description: 'Strong winds and heavy rain have disrupted electricity and transportation.', severity: 'Moderate' },
+    { type: 'Tsunami', location: 'Alappuzha', lat: 9.4981, lng: 76.3388, description: 'A tsunami warning has been issued after an offshore earthquake.', severity: 'Critical' },
+    { type: 'Earthquake', location: 'Idukki', lat: 9.8500, lng: 76.9800, description: 'Mild tremors felt in the region, causing panic among residents.', severity: 'Low' },
+    { type: 'Drought', location: 'Palakkad', lat: 10.7867, lng: 76.6548, description: 'Water scarcity due to prolonged dry weather, affecting agriculture.', severity: 'High' },
+    { type: 'Fire', location: 'Thrissur', lat: 10.5276, lng: 76.2144, description: 'A major fire outbreak in a market area, causing damage to properties.', severity: 'Severe' },
+    { type: 'Tornado', location: 'Kannur', lat: 11.8745, lng: 75.3704, description: 'A rare tornado event causing structural damage to buildings.', severity: 'Moderate' },
+    { type: 'Flood', location: 'Kollam', lat: 8.8932, lng: 76.6141, description: 'Continuous heavy rain has led to flash floods in low-lying areas.', severity: 'High' },
+    { type: 'Landslide', location: 'Munnar', lat: 10.0889, lng: 77.0595, description: 'Heavy rainfall triggered landslides, damaging tea plantations.', severity: 'Severe' },
+    { type: 'Cyclone', location: 'Kozhikode', lat: 11.2588, lng: 75.7804, description: 'Cyclone alert issued; authorities advise coastal evacuation.', severity: 'Critical' },
+    { type: 'Fire', location: 'Pathanamthitta', lat: 9.2642, lng: 76.7872, description: 'A forest fire has spread, endangering wildlife and nearby villages.', severity: 'Severe' },
+    { type: 'Flood', location: 'Malappuram', lat: 11.0736, lng: 76.0740, description: 'River overflowing due to heavy rain, causing displacement.', severity: 'High' },
+    { type: 'Tsunami', location: 'Varkala', lat: 8.7350, lng: 76.7032, description: 'Sea level rise observed, authorities monitoring for possible tsunami.', severity: 'Moderate' },
+    { type: 'Earthquake', location: 'Kattappana', lat: 9.7450, lng: 77.1160, description: 'A minor earthquake rattled the region; no major damage reported.', severity: 'Low' },
+    { type: 'Drought', location: 'Attappadi', lat: 11.0973, lng: 76.6932, description: 'Severe water shortage impacting tribal communities.', severity: 'High' },
+    { type: 'Fire', location: 'Periyar', lat: 9.4611, lng: 77.2203, description: 'Wildfire spreading in the Periyar Tiger Reserve.', severity: 'Critical' },
+    { type: 'Tornado', location: 'Aluva', lat: 10.1076, lng: 76.3511, description: 'Strong winds damaged roofs and uprooted trees.', severity: 'Moderate' },
+    { type: 'Flood', location: 'Chalakudy', lat: 10.2987, lng: 76.3372, description: 'Dam overflow has caused flooding in nearby villages.', severity: 'Severe' },
+    { type: 'Landslide', location: 'Ponmudi', lat: 8.7562, lng: 77.1125, description: 'Heavy rainfall led to landslides blocking major trekking routes.', severity: 'High' }
+];
+
+        function addMarkers() {
+            disasters.forEach(disaster => {
+                const marker = L.marker([disaster.lat, disaster.lng]).addTo(map)
+                .on('click', () => {
+                    document.getElementById('details').innerHTML = `
+                        <h3>${disaster.type} - ${disaster.location}</h3>
+                        <p><strong>Description:</strong> ${disaster.description}</p>
+                        <p><strong>Severity:</strong> ${disaster.severity}</p>
+                    `;
+                });
+            });
+        }
+
+        addMarkers();
+
+        document.getElementById('search-box').addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            const found = disasters.find(disaster => disaster.location.toLowerCase().includes(query));
+            if (found) {
+                map.setView([found.lat, found.lng], 10);
+            }
+        });
+    </script>
+</body>
+</html>

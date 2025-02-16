@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile - CITYLERT</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 8px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+            color: #ffffff;
+        }
+
+        .profile-edit-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 10px auto;
+            animation: fadeIn 1.5s ease-in-out;
+            overflow-y: scroll;
+        }
+
+        .profile-edit-container img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 4px solid #1abc9c;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-edit-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-edit-container h1 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .profile-edit-container form {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .profile-edit-container form input, .profile-edit-container form textarea, .profile-edit-container form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            color: #333;
+            box-sizing: border-box;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-edit-container form input:focus, .profile-edit-container form textarea:focus, .profile-edit-container form select:focus {
+            border-color: #1abc9c;
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.5);
+            outline: none;
+        }
+
+        .profile-edit-container button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .profile-edit-container button:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+        }
+
+        .profile-edit-container button:active {
+            transform: translateY(0);
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); }
+            to { transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="set.html">Settings</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Profile Edit Section -->
+    <div class="profile-edit-container">
+        <img src="https://via.placeholder.com/100" alt="Profile Picture">
+        <h1>Edit Profile</h1>
+        <form id="edit-profile-form">
+            <label for="profile-picture">Profile Picture URL:</label>
+            <input type="text" id="profile-picture" name="profile-picture" placeholder="Enter image URL">
+
+            <label for="full-name">Full Name:</label>
+            <input type="text" id="full-name" name="full-name" placeholder="Enter your full name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" placeholder="Enter your address" required>
+
+            <label for="bio">About:</label>
+            <textarea id="bio" name="bio" rows="4" placeholder="Tell us about yourself"></textarea>
+
+            <label for="date-joined">Date Joined:</label>
+            <input type="date" id="date-joined" name="date-joined" required>
+
+            <button type="submit">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('edit-profile-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Retrieve input values
+            const profilePicture = document.getElementById('profile-picture').value;
+            const fullName = document.getElementById('full-name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+            const bio = document.getElementById('bio').value;
+            const dateJoined = document.getElementById('date-joined').value;
+
+            // Save the data in localStorage
+            localStorage.setItem('profilePicture', profilePicture);
+            localStorage.setItem('username', fullName);
+            localStorage.setItem('email', email);
+            localStorage.setItem('phone', phone);
+            localStorage.setItem('location', address);
+            localStorage.setItem('bio', bio);
+            localStorage.setItem('dateJoined', dateJoined);
+
+            // Implement form submission logic here
+            alert('Profile updated successfully!');
+            window.location.href = "main.html";
+        });
+    </script>
+</body>
+</html>

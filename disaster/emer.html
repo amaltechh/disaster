@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Alerts - CITYLERT</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: 0% 0%;
+            animation: moveBackground 20s linear infinite;
+            color: #ffffff;
+            overflow: hidden; /* Prevent scrolling */
+            height: 100vh; /* Full viewport height */
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Background animation */
+        @keyframes moveBackground {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        /* Keyframes for other animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 15px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+        }
+
+        .hero {
+            padding: 80px 20px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.6);
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.4;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex: 1;
+            overflow-y: auto; /* Allow scrolling if necessary within the grid container */
+            height: calc(100vh - 100px); /* Adjust height to fit within viewport */
+        }
+
+        .card {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: left;
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: fadeIn 1s ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 200px; /* Fixed height for cards */
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .card h3 {
+            margin: 0 0 10px 0;
+            color: #1abc9c;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .card p {
+            margin: 0 0 10px 0;
+            color: #f0f0f0;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .card a {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #1abc9c;
+            color: #fff;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 14px;
+            transition: background 0.3s ease;
+            align-self: flex-start; /* Align button at the start */
+        }
+
+        .card a:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="report.html">Report</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>Emergency Alerts</h1>
+        <p>Stay updated with the latest emergency alerts to ensure your safety and the safety of others.</p>
+    </div>
+
+    <!-- Grid Container for Cards -->
+    <div class="grid-container">
+        <div class="card">
+            <h3>Flood Warning</h3>
+            <p>Severe flood warning in the downtown area. Residents are advised to evacuate to higher ground immediately.</p>
+            <a href="flood.html">View Details</a>
+        </div>
+        <div class="card">
+            <h3>Fire Alert</h3>
+            <p>A large wildfire is spreading rapidly near the outskirts. Authorities are urging people to avoid the area.</p>
+            <a href="fire.html">View Details</a>
+        </div>
+        <div class="card">
+            <h3>Severe Weather</h3>
+            <p>A severe storm is expected in the northern part of the city. Stay indoors and avoid unnecessary travel.</p>
+            <a href="seve.html">View Details</a>
+        </div>
+        <div class="card">
+            <h3>Theft Alert</h3>
+            <p>Reports of multiple thefts in the residential areas. Be cautious and secure your property.</p>
+            <a href="theft.html">View Details</a>
+        </div>
+        <div class="card">
+            <h3>Accident Alert</h3>
+            <p>An accident has occurred at the city center. Emergency services are on site. Expect delays in traffic.</p>
+            <a href="aci.html">View Details</a>
+        </div>
+        <div class="card">
+            <h3>Earthquake</h3>
+            <p>An Earthquake has occurred at the city center. Emergency services are on site.</p>
+            <a href="earth.html">View Details</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            animation: gradientAnimation 15s ease infinite;
+            color: white;
+            overflow: auto; /* Enable scrolling */
+            height: auto; /* Allow height to adjust based on content */
+            display: flex;
+            flex-direction: column;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .feedback-container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 10px;
+            margin-left: 20%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: #1abc9c;
+        }
+
+        p {
+            font-size: 14px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            color: #1abc9c;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            font-size: 14px;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #ddd;
+        }
+
+        textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        .rating {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .star {
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .star:hover, .star.active {
+            color: #f39c12;
+        }
+
+        button {
+            background: #1abc9c;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background: #16a085;
+            transform: scale(1.05);
+        }
+
+        .message {
+            margin-top: 10px;
+            font-size: 14px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .feedback-container {
+                padding: 20px;
+                width: 90%;
+            }
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="emer.html">emergency alert</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
+    </div>
+
+    <div class="feedback-container">
+        <h2>We Value Your Feedback</h2>
+        <p>Help us improve by sharing your thoughts!</p>
+
+        <form id="feedbackForm">
+            <div class="input-group">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Your Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+
+            <div class="input-group">
+                <label for="feedback">Your Feedback</label>
+                <textarea id="feedback" name="feedback" placeholder="Write your feedback..." required></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Rate Us</label>
+                <div class="rating">
+                    <span class="star" data-value="1">★</span>
+                    <span class="star" data-value="2">★</span>
+                    <span class="star" data-value="3">★</span>
+                    <span class="star" data-value="4">★</span>
+                    <span class="star" data-value="5">★</span>
+                </div>
+            </div>
+
+            <button type="submit">Submit Feedback</button>
+            <p class="message" id="successMessage">Thank you for your feedback! 😊</p>
+        </form>
+    </div>
+
+    <script>
+        const stars = document.querySelectorAll('.star');
+        const feedbackForm = document.getElementById('feedbackForm');
+        const successMessage = document.getElementById('successMessage');
+        let selectedRating = 0;
+
+        stars.forEach(star => {
+            star.addEventListener('click', function() {
+                selectedRating = this.getAttribute('data-value');
+                stars.forEach(s => s.classList.remove('active'));
+                this.classList.add('active');
+                this.previousElementSibling && this.previousElementSibling.classList.add('active');
+                let prev = this.previousElementSibling;
+                while (prev) {
+                    prev.classList.add('active');
+                    prev = prev.previousElementSibling;
+                }
+            });
+        });
+
+        feedbackForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            successMessage.style.display = 'block';
+            setTimeout(() => successMessage.style.display = 'none', 3000);
+            feedbackForm.reset();
+            stars.forEach(star => star.classList.remove('active'));
+        });
+    </script>
+
+</body>
+</html>

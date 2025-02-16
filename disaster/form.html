@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteer Opportunities - CITYLERT</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            animation: gradientAnimation 15s ease infinite;
+            color: white;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .navbar .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+        }
+
+        .content {
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-in-out;
+            flex: 1;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .content h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1abc9c;
+            animation: titleAnimation 2s ease-in-out;
+        }
+
+        @keyframes titleAnimation {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .volunteer-section {
+            margin-bottom: 40px;
+        }
+
+        .volunteer-section h2 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #3498db;
+            animation: sectionTitleAnimation 1.5s ease-in-out;
+        }
+
+        @keyframes sectionTitleAnimation {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .volunteer-section p {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .volunteer-section ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .volunteer-section ul li {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .volunteer-section button {
+            padding: 15px;
+            background-color: #1abc9c;
+            color: rgb(248, 248, 248);
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            animation: buttonAnimation 1s ease-in-out;
+        }
+
+        @keyframes buttonAnimation {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .volunteer-section button:hover {
+            background-color: #16a085;
+        }
+
+        .off-road-form {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        .off-road-form label {
+            font-size: 18px;
+            color: white;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .off-road-form input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+        }
+
+        .off-road-form input[type="submit"] {
+            background-color: #1abc9c;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .off-road-form input[type="submit"]:hover {
+            background-color: #16a085;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .volunteer-section h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="report.html">Report Now</a></li>
+            <li><a href="safe.html">Safety Tips</a></li>
+            <li><a href="set.html">Settings</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        <h1>Volunteer Opportunities</h1>
+
+        <!-- Volunteer Section -->
+        <div class="volunteer-section">
+            <h2>Join Us in Making a Difference</h2>
+            <p>We are looking for dedicated volunteers to help us create a safer and more aware community. Your contribution can make a huge impact. Whether you have a few hours a week or can volunteer on an ongoing basis, we have opportunities that fit your schedule.</p>
+
+            <p>Opportunities include:</p>
+            <ul>
+                <li>Community Outreach</li>
+                <li>Event Coordination</li>
+                <li>Emergency Response Support</li>
+                <li>Administrative Assistance</li>
+            </ul>
+
+            <p>Fill out the form below to express your interest, and we will contact you with more information.</p>
+
+            <button onclick="showForm()">Express Interest</button>
+        </div>
+
+        <!-- Off-Road Support Section -->
+        <div class="off-road-form">
+            <h2>Off-Road Support</h2>
+            <p>If you have an off-road vehicle, you can help during emergencies. Please provide the details below:</p>
+            <form id="offRoadForm">
+                <label for="vehicleType">Vehicle Name/Type:</label>
+                <input style="width: 97%;" type="text" id="vehicleType" name="vehicleType" >
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function showForm() {
+            alert("Form functionality coming soon!");
+        }
+
+        document.getElementById('offRoadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const vehicleType = document.getElementById('vehicleType').value;
+            alert(`Thank you for your support! Vehicle Type: ${vehicleType}`);
+
+            // You can further handle form submission here, e.g., save data to localStorage or send to a server.
+            document.getElementById('offRoadForm').reset();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - CITYLERT</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+        }
+
+        .content {
+            padding: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .content h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1abc9c;
+        }
+
+        .settings-section {
+            margin-bottom: 40px;
+        }
+
+        .settings-section h2 {
+            margin-bottom: 20px;
+            font-size: 22px;
+            color: #3498db;
+        }
+
+        .settings-section label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .settings-section input,
+        .settings-section select {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
+
+        .settings-section input::placeholder {
+            color: #faf3f3;
+        }
+
+        .settings-section button {
+            padding: 15px;
+            background-color: #1abc9c;
+            color: rgb(248, 248, 248);
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .settings-section button:hover {
+            background-color: #16a085;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+
+            .settings-section h2 {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="emer.html">Alerts</a></li>
+            <li><a href="report.html">Report Now</a></li>
+            <li><a href="safe.html">Safety Tips</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        <h1>Settings</h1>
+
+        <!-- Account Settings -->
+        <div class="settings-section">
+            <h2>Account Settings</h2>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required>
+
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+
+            <label for="password">Change Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter new password" required>
+
+            <button type="submit">Save Changes</button>
+        </div>
+
+        <!-- Alert Preferences -->
+        <div class="settings-section">
+            <h2>Alert Preferences</h2>
+            <label for="alert-frequency">Alert Frequency</label>
+            <select class="alert-frequency" id="alert-frequency" name="alert-frequency">
+                <option style="color: black;" value="immediate">Immediate</option>
+                <option style="color: black;" value="daily">Daily Summary</option>
+                <option style="color: black;" value="weekly">Weekly Summary</option>
+            </select>
+
+            <label for="alert-type">Alert Type</label>
+            <select id="alert-type" name="alert-type">
+                <option style="color: black;" value="all">All Alerts</option>
+                <option style="color: black;" value="emergency">Emergency Alerts Only</option>
+                <option style="color: black;" value="weather">Weather Alerts Only</option>
+            </select>
+
+            <button type="submit">Update Preferences</button>
+        </div>
+
+        <!-- Notification Settings -->
+        <div class="settings-section">
+            <h2>Notification Settings</h2>
+            <label>
+               Email Notifications <input type="checkbox" name="email-notifications" checked>
+                
+            </label>
+            <label>
+                SMS Notifications<input type="checkbox" name="sms-notifications">
+                
+            </label>
+            <label>
+                Push Notifications<input type="checkbox" name="push-notifications">
+                
+            </label>
+
+            <button type="submit">Save Notification Settings</button>
+        </div>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Form elements
+            const usernameInput = document.getElementById("username");
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const alertFrequencySelect = document.getElementById("alert-frequency");
+            const alertTypeSelect = document.getElementById("alert-type");
+            const emailNotificationsCheckbox = document.querySelector("input[name='email-notifications']");
+            const smsNotificationsCheckbox = document.querySelector("input[name='sms-notifications']");
+            const pushNotificationsCheckbox = document.querySelector("input[name='push-notifications']");
+    
+            // Load saved settings from localStorage
+            function loadSettings() {
+                usernameInput.value = localStorage.getItem("username") || "";
+                emailInput.value = localStorage.getItem("email") || "";
+                alertFrequencySelect.value = localStorage.getItem("alertFrequency") || "immediate";
+                alertTypeSelect.value = localStorage.getItem("alertType") || "all";
+                emailNotificationsCheckbox.checked = JSON.parse(localStorage.getItem("emailNotifications") || "true");
+                smsNotificationsCheckbox.checked = JSON.parse(localStorage.getItem("smsNotifications") || "false");
+                pushNotificationsCheckbox.checked = JSON.parse(localStorage.getItem("pushNotifications") || "false");
+            }
+    
+            // Save settings to localStorage
+            function saveSettings() {
+                localStorage.setItem("username", usernameInput.value);
+                localStorage.setItem("email", emailInput.value);
+                localStorage.setItem("password", passwordInput.value);  // In practice, consider more secure storage for passwords
+                localStorage.setItem("alertFrequency", alertFrequencySelect.value);
+                localStorage.setItem("alertType", alertTypeSelect.value);
+                localStorage.setItem("emailNotifications", emailNotificationsCheckbox.checked);
+                localStorage.setItem("smsNotifications", smsNotificationsCheckbox.checked);
+                localStorage.setItem("pushNotifications", pushNotificationsCheckbox.checked);
+    
+                alert("Settings saved successfully!");
+            }
+    
+            // Event listeners for the Save buttons
+            document.querySelectorAll("button[type='submit']").forEach(button => {
+                button.addEventListener("click", function (event) {
+                    event.preventDefault(); // Prevent the form from submitting traditionally
+                    saveSettings();
+                });
+            });
+    
+            // Load settings on page load
+            loadSettings();
+        });
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CityLert - Sign Up</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+            animation: backgroundMove 20s linear infinite;
+        }
+
+        @keyframes backgroundMove {
+            0% { background-position: center; }
+            100% { background-position: center 200%; }
+        }
+
+        .signup-container {
+            
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease, float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        h2 {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #cccccc;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            color: #333;
+            box-sizing: border-box;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #1abc9c;
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.5);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .link {
+            margin-top: 25px;
+            font-size: 0.9rem;
+        }
+
+        .link a {
+            color: #1abc9c;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .link a:hover {
+            color: #16a085;
+        }
+
+        @media (max-width: 600px) {
+            .signup-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 0.9rem;
+            }
+
+            input, button {
+                font-size: 1rem;
+                padding: 12px;
+            }
+
+            button {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h1>Company Name</h1>
+        <h2>For the welfare of Citizens</h2>
+        <form id="signup-form">
+            <input type="text" id="full-name" placeholder="Full Name" required>
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="tel" id="phone" placeholder="Phone Number" pattern="^\+?[0-9]{10,15}$" required title="Enter a valid phone number. E.g., +1234567890">
+        <input type="email" id="email" placeholder="Email Address" required>
+        <input type="text" id="location" placeholder="Location" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+        <button type="submit"><b>SIGN UP</b></button>
+        </form>
+        <div class="link">
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </div>
+    <script>
+      
+        document.getElementById("signup-form").addEventListener("submit", async (event) => {
+            event.preventDefault();
+        
+            const fullName = document.getElementById("full-name").value;
+            const username = document.getElementById("username").value;
+            const phone = document.getElementById("phone").value;
+            const email = document.getElementById("email").value;
+            const location = document.getElementById("location").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+        
+            const response = await fetch("http://localhost:5000/api/auth/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ fullName, username, phone, email, location, password, confirmPassword }),
+            });
+        
+            const data = await response.json();
+        
+            if (response.ok) {
+                alert("User registered successfully!");
+            } else {
+                alert(`Error: ${data.message}`);
+            }
+        });
+        
+
+    </script>
+</body>
+</html>

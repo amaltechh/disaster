@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITYLERT | Alerts</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+            color: #ffffff;
+        }
+
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 5%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 1.5s ease-in-out;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #1abc9c;
+        }
+
+        .hero p {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            font-weight: 300;
+            line-height: 1.6;
+            max-width: 800px;
+        }
+
+        .alerts-container {
+            display: flex;
+            flex-direction: column;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.85), rgba(26, 188, 156, 0.9));
+            border-radius: 15px;
+            width: 95%;
+            max-width: 1400px; /* Keeps it wide but contained */
+            margin: 20px auto;
+            animation: fadeIn 1.5s ease-in-out;
+            overflow-y: auto;
+            flex-grow: 1;
+            box-sizing: border-box; /* Ensures consistent padding & width */
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Hover Glow Effect */
+        .alerts-container:hover {
+            box-shadow: 0 12px 30px rgba(26, 188, 156, 0.5);
+            transform: scale(1.02);
+        }
+        
+        /* Alert Item */
+        .alert-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            transition: all 0.3s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Alert Hover */
+        .alert-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        /* Animated Alert Icon */
+        .alert-icon {
+            width: 25px;
+            height: 25px;
+            margin-right: 15px;
+            animation: pulse 1.5s infinite alternate;
+        }
+        
+        /* Smooth Scroll */
+        .alerts-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .alerts-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+        
+        .alerts-container::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            to {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+        
+
+        .alert-card {
+            padding: 20px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, rgba(26, 188, 156, 0.1), rgba(22, 160, 133, 0.15));
+            color: #ffffff;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .alert-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .alert-card h3 {
+            margin-top: 0;
+            font-size: 1.5rem;
+            color: #1abc9c;
+            text-transform: uppercase;
+        }
+
+        .alert-card p {
+            margin: 5px 0;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .alert-card p strong {
+            color: #1abc9c;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 0.875rem;
+            }
+
+            .alert-card {
+                padding: 15px;
+            }
+
+            .alert-card h3 {
+                font-size: 1.25rem;
+            }
+
+            .alert-card p {
+                font-size: 0.875rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="report.html">Report Now</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>City Alerts</h1>
+        <p>Stay informed about critical alerts and notifications affecting your area. Below are the latest updates and important alerts.</p>
+    </div>
+
+    <!-- Alerts Container -->
+    <div class="alerts-container" id="alertsContainer">
+        <!-- Alerts will be dynamically added here -->
+    </div>
+
+    <script>
+        async function fetchReports() {
+            try {
+                const response = await fetch('http://localhost:5000/api/reports'); // Change if deployed
+                if (!response.ok) throw new Error('Failed to fetch data');
+                
+                const reports = await response.json();
+        
+                // Get the alerts container
+                const alertsContainer = document.getElementById('alertsContainer');
+                alertsContainer.innerHTML = ''; // Clear previous reports
+        
+                // Populate the UI with reports
+                reports.forEach(report => {
+                    const alertCard = document.createElement('div');
+                    alertCard.className = 'alert-card';
+                    alertCard.innerHTML = `
+                        <h3>${report.type}</h3>
+                        <p><strong>Location:</strong> ${report.location}</p>
+                        <p>${report.description}</p>
+                        <p><strong>Reported by:</strong> ${report.contact}</p>
+                        <p><strong>Time:</strong> ${new Date(report.timestamp).toLocaleString()}</p>
+                    `;
+                    alertsContainer.appendChild(alertCard);
+                });
+        
+            } catch (error) {
+                console.error('Error fetching reports:', error);
+            }
+        }
+        
+        // Call the function when the page loads
+        fetchReports();
+        
+    </script>
+</body>
+</html>

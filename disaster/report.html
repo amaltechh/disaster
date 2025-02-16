@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report an Incident - CITYLERT</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px); /* Frosted glass effect */
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            animation: slideDown 0.8s ease-out;
+            position: sticky;
+            top: 0;
+            width: 98%;
+            z-index: 1000;
+            transition: all 0.3s ease-in-out;
+        }
+        
+        /* Smooth transition when scrolling */
+        .navbar.scrolled {
+            background: rgba(0, 0, 0, 0.9);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+        }
+        
+        /* Navbar Links */
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .navbar ul li {
+            margin-left: 15px;
+        }
+        
+        .navbar ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        /* Glowing Hover Effect */
+        .navbar ul li a:hover {
+            background: rgba(26, 188, 156, 0.8);
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.8);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        /* Active Link Indicator */
+        .navbar ul li a.active {
+            background: #1abc9c;
+            color: #ffffff;
+        }
+        
+        /* Logo Styling */
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+        
+        /* Hover Effect for Logo */
+        .navbar .logo:hover {
+            color: #1abc9c;
+            transform: scale(1.05);
+        }
+        
+        /* Keyframe Animations */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .navbar .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar ul li {
+            margin-left: 20px;
+        }
+
+        .navbar ul li a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .navbar ul li a:hover {
+            background-color: #1abc9c;
+        }
+
+        .content {
+            padding: 40px;
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .content h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #1abc9c;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 10px;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        input, textarea, select {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border: none;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: #5a5858;
+            appearance: none; /* Remove default dropdown arrow */
+            -webkit-appearance: none; /* Remove default dropdown arrow in Safari */
+            -moz-appearance: none; /* Remove default dropdown arrow in Firefox */
+            background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="white" d="M2 0L0 2h4z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 10px;
+        }
+
+        textarea {
+            resize: vertical;
+            height: 150px;
+        }
+
+        button {
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #16a085;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">CIVICWATCH</div>
+        <ul>
+            <li><a href="main.html">Home</a></li>
+            <li><a href="dash.html">Dashboard</a></li>
+            <li><a href="alert.html">Alerts</a></li>
+            <li><a href="login.html">Logout</a></li>
+        </ul>
+    </div>
+
+    <!-- Content Section -->
+    <div class="content">
+        <h1>Report an Incident</h1>
+
+        <!-- Report Form -->
+        <form id="reportForm">
+            <label for="incident-type">Type of Incident</label>
+            <select id="incident-type" name="incident-type" required>
+                <option value="" disabled selected>Select the type of incident</option>
+                <option value="Fire">Fire</option>
+                <option value="Accident">Accident</option>
+                <option value="Theft">Theft</option>
+                <option value="Flood">Flood</option>
+                <option value="Severe Weather">Severe Weather</option>
+                <option value="earthquake">earthquake</option>
+                <option value="Other">Other</option>
+                <input type="text" id="locationInput" placeholder="Enter area location">
+    <button id="searchButton">Search</button>
+    <div id="map" style="height: 450px; margin-top: 20px;"></div>
+            </select>
+
+            <label for="location">Describe the excact place</label>
+            <input type="text" id="location" name="location" placeholder="Enter the location of the incident" required>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" placeholder="Provide a detailed description of the incident" required></textarea>
+
+            <label for="severity">Severity of Incident</label>
+        <select id="severity" name="severity" required>
+        <option value="" disabled selected>Select the severity level</option>
+        <option value="Low">Low</option>
+        <option value="Medium">Medium</option>
+        <option value="High">High</option>
+        <option value="Critical">Critical</option>
+
+            <label for="contact">Your Contact Information</label>
+            <input type="text" id="contact" name="contact" placeholder="Enter your phone number or email" required>
+
+            <button type="submit">Submit Report</button>
+        </form>
+        <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Map Search</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </div>
+
+    <script>
+        var map = L.map('map').fitWorld();
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+// Function to search and focus on the location
+$('#searchButton').click(function() {
+    var location = $('#locationInput').val();
+    if (location) {
+        $.getJSON('https://nominatim.openstreetmap.org/search?format=json&q=' + location, function(data) {
+            if (data && data.length > 0) {
+                var lat = data[0].lat;
+                var lon = data[0].lon;
+                map.setView([lat, lon], 13);
+                L.marker([lat, lon]).addTo(map)
+                  .bindPopup(location)
+                  .openPopup();
+            } else {
+                alert('Location not found');
+            }
+        });
+    } else {
+        alert('Please enter a location name.');
+    }
+});
+document.getElementById('reportForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const now = new Date().toISOString();
+
+    const incident = {
+        type: document.getElementById('incident-type').value,
+        location: document.getElementById('location').value,
+        description: document.getElementById('description').value,
+        contact: document.getElementById('contact').value,
+        severity: document.getElementById('severity').value,
+        timestamp: now
+    };
+
+    try {
+        const response = await fetch('http://localhost:5000/api/reports', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(incident)
+        });
+
+        if (response.ok) {
+            alert('Report submitted successfully');
+            document.getElementById('reportForm').reset();
+            window.location.href = 'alert.html';
+        } else {
+            alert('Error submitting report');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Failed to connect to the server');
+    }
+        });
+    </script>
+</body>
+</html>

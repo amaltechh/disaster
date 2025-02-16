@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CITYLERT Login</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh; /* Use min-height instead of fixed height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/006/879/260/original/modern-abstract-wave-fluid-background-vector.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            color: #ffffff;
+            overflow: auto; /* Allow scrolling if content overflows */
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+                text-align: center;
+            }
+        }
+                
+
+        @keyframes backgroundMove {
+            0% { background-position: center; }
+            100% { background-position: center 200%; }
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: rgba(0, 0, 0, 0.85);
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.8s ease, float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .logo {
+            width: 100px; /* Adjust size as needed */
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        h2 {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            font-weight: 300;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: #cccccc;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+            background-color: #ffffff;
+            color: #333;
+            box-sizing: border-box;
+            transition: border 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            border-color: #1abc9c;
+            box-shadow: 0 0 10px rgba(26, 188, 156, 0.5);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #16a085;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .link {
+            margin-top: 25px;
+            font-size: 0.9rem;
+        }
+
+        .link a {
+            color: #1abc9c;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .link a:hover {
+            color: #16a085;
+        }
+
+        .about-us {
+            margin-top: 50px;
+            text-align: center;
+            color: #ccc;
+            font-size: 0.9rem;
+            padding: 0 20px;
+            max-width: 800px;
+            animation: slideIn 1.5s ease;
+        }
+
+        .about-us h3 {
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            color: #1abc9c;
+            animation: fadeInText 2s ease both;
+        }
+
+        .about-us p {
+            font-size: 1rem;
+            line-height: 1.6;
+            opacity: 0;
+            animation: fadeInText 2s ease both 0.5s;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeInText {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 600px) {
+            .login-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 0.9rem;
+            }
+
+            input, button {
+                font-size: 1rem;
+                padding: 12px;
+            }
+
+            button {
+                margin-top: 15px;
+            }
+
+            .about-us {
+                padding: 0 10px;
+            }
+
+            .about-us h3 {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <!-- Logo -->
+        <img src="C:\Users\AMAL BENNY\Downloads\WhatsApp Image 2024-08-19 at 09.03.55_29dbb6f9.jpg" alt="CITYLERT Logo" class="logo">
+        <h1>Company Name</h1>
+        <h2></h2>
+        <input type="text" id="username" placeholder="Enter your username" required>
+        <input type="password" id="password" placeholder="Enter your password" required>
+        <button onclick="validateLogin()">Login</button>
+        <p id="error-message" class="error-message">Invalid username or password.</p>
+        <div class="link">
+            <p><a href="sign.html">Don't have an account? Sign Up</a></p>
+            <p><a href="for.html">Forgot password?</a></p>
+        </div>
+    </div>
+
+    <div class="about-us">
+        <h3>About Us</h3>
+        <p>AERIS is a cutting-edge platform designed to keep citizens informed and aware of emergencies and incidents in their vicinity. Our mission is to enhance community safety by delivering real-time alerts and providing a seamless interface for users to report incidents. We are committed to fostering a safer, more connected community through innovative technology and collaboration.</p>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginButton = document.querySelector("button");
+            const errorMessage = document.getElementById("error-message");
+        
+            loginButton.addEventListener("click", async function () {
+                const username = document.getElementById("username").value.trim();
+                const password = document.getElementById("password").value.trim();
+        
+                if (!username || !password) {
+                    errorMessage.textContent = "Please enter username and password.";
+                    errorMessage.style.display = "block";
+                    return;
+                }
+        
+                try {
+                    const response = await fetch("http://localhost:5000/api/auth/login", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
+        
+                    const data = await response.json();
+        
+                    if (response.ok) {
+                        // Save token in local storage for authentication
+                        localStorage.setItem("token", data.token);
+                        localStorage.setItem("username", data.username);
+        
+                        // Redirect to main.html
+                        window.location.href = "main.html";
+                    } else {
+                        errorMessage.textContent = data.message || "Invalid username or password.";
+                        errorMessage.style.display = "block";
+                    }
+                } catch (error) {
+                    console.error("Login Error:", error);
+                    errorMessage.textContent = "Server error. Please try again later.";
+                    errorMessage.style.display = "block";
+                }
+            });
+        });
+        
+    </script>
+</body>
+</html>
